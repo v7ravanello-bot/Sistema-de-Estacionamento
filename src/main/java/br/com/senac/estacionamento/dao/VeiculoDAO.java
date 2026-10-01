@@ -98,46 +98,46 @@ public class VeiculoDAO {
         String sql = """
                         UPDATE veiculo
                         SET valor_hora = ?
-                        WHERE placa ?
+                        WHERE placa = ?
                         """;
         
-        try (
+            try{
                 Connection conexao = Conexao.conectar();
-                PreparedStatement comando = conexao.prepareStatement(sql)
-        ){
+                PreparedStatement comando = conexao.prepareStatement(sql);
+
                 comando.setDouble(1, novoValor);
                 comando.setString(2, placa);
+                
+                int linhas = comando.executeUpdate();
+                System.out.println("Valor Atualizado! Linhas afetadas: " + linhas);
+                return linhas > 0;
+
+
+            } catch (SQLException erro){
+                System.out.println("Erro ao atualizar valor_hora: " + erro.getMessage());
+                return false;
+         }
+    }
+         public boolean excluir( String placa) {
+
+            String sql = """
+                    DELETE FROM veiculo
+                    WHERE placa = ?
+                    """;
+            
+            try{
+                Connection conexao = Conexao.conectar();
+                PreparedStatement comando = conexao.prepareStatement(sql);
+                
+                comando.setString(1, placa);
 
                 int linhas = comando.executeUpdate();
 
+                System.out.println("Vaiculo excluido! Linhas afetadas: " + linhas);
                 return linhas > 0;
 
-        } catch(SQLException erro){
-                System.out.println("Erro ao atualizar: " + erro.getMessage());
-                return false;
-        }
-
-    }
-
-    public boolean excluir(String placa) {
-
-        String sql = """
-            DELETE FROM veiculo
-            WHERE placa = ?
-            """;
-
-        try (
-            Connection conexao = Conexao.conectar();
-
-            PreparedStatement comando = conexao.prepareStatement(sql)
-        ) {
-
-            comando.setString(1, placa);
-            int linhas = comando.executeUpdate();
-            return linhas > 0;
-
-        } catch (SQLException erro) {
-            System.out.println("Erro ao excluir: " + erro.getMessage());
+        } catch( SQLException erro) {
+            System.out.println("Erro ao excluir veículo: " + erro.getMessage());
             return false;
         }
     }
